@@ -8,6 +8,7 @@ class CPU:
 
         self.ram = [0] * 256
         self.reg = [0] * 8
+        self.sp = 7
         self.pc = 0
 
     def ram_read(self, ram_address):
@@ -69,6 +70,8 @@ class CPU:
         self.LDI = 0b10000010
         self.PRN = 0b01000111
         self.MUL = 0b10100010
+        self.PUSH = 0b01000101
+        self.POP = 0b01000110
 
         running = True
 
@@ -89,3 +92,13 @@ class CPU:
             elif inst == self.MUL:
                 self.alu('MUL', operand_a, operand_b)
                 self.pc += 3
+            elif inst == self.PUSH:
+                self.reg[self.sp] -= 1
+                value = self.reg[operand_a]
+                self.ram_write(self.reg[self.sp], value)
+                self.pc += 2
+            elif inst == self.POP:
+                value = self.ram_read(self.reg[self.sp])
+                self.reg[self.sp] += 1
+                self.reg[operand_a] = value
+                self.pc += 2
