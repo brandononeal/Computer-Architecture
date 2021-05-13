@@ -69,9 +69,12 @@ class CPU:
         self.HLT = 0b00000001
         self.LDI = 0b10000010
         self.PRN = 0b01000111
+        self.ADD = 0b10100000
         self.MUL = 0b10100010
         self.PUSH = 0b01000101
         self.POP = 0b01000110
+        self.CALL = 0b01010000
+        self.RET = 0b00010001
 
         running = True
 
@@ -89,6 +92,9 @@ class CPU:
             elif inst == self.PRN:
                 print(self.reg[operand_a])
                 self.pc += 2
+            elif inst == self.ADD:
+                self.alu('ADD', operand_a, operand_b)
+                self.pc += 3
             elif inst == self.MUL:
                 self.alu('MUL', operand_a, operand_b)
                 self.pc += 3
@@ -102,3 +108,10 @@ class CPU:
                 self.reg[self.sp] += 1
                 self.reg[operand_a] = value
                 self.pc += 2
+            elif inst == self.CALL:
+                self.reg[self.sp] -= 1
+                self.ram_write(self.reg[self.sp], self.pc + 2)
+                self.pc = self.reg[operand_a]
+            elif inst == self.RET:
+                self.pc = self.ram_read(self.reg[self.sp])
+                self.reg[self.sp] += 1
