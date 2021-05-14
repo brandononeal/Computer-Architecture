@@ -40,6 +40,17 @@ class CPU:
             self.reg[reg_a] += self.reg[reg_b]
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "CMP":
+            # FL 00000LGE
+            if self.reg[reg_a] == self.reg[reg_b]:
+                # Set to 00000001
+                pass
+            elif self.reg[reg_a] > self.reg[reg_b]:
+                # Set to 00000010
+                pass
+            elif self.reg[reg_a] < self.reg[reg_b]:
+                # Set to 00000100
+                pass
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -75,6 +86,12 @@ class CPU:
         self.POP = 0b01000110
         self.CALL = 0b01010000
         self.RET = 0b00010001
+
+        self.CMP = 0b10100111
+
+        self.JMP = 0b01010100
+        self.JEQ = 0b01010101
+        self.JNE = 0b01010110
 
         running = True
 
@@ -115,3 +132,12 @@ class CPU:
             elif inst == self.RET:
                 self.pc = self.ram_read(self.reg[self.sp])
                 self.reg[self.sp] += 1
+            elif inst == self.CMP:
+                self.alu('CMP', operand_a, operand_b)
+                self.pc += 3
+            elif inst == self.JMP:
+                pass
+            elif inst == self.JEQ:
+                pass
+            elif inst == self.JNE:
+                pass
